@@ -23,4 +23,6 @@ rndr pmap_render_pass2.rib
 
 Thank you for your support.
 
+<img width="400" height="400" alt="pmap_render_pass2" src="https://github.com/user-attachments/assets/5ae1e250-391f-4c1e-8a73-38c41615a7ca" />
+
 
