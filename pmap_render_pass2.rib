@@ -1,0 +1,85 @@
+#Option "hider" "radiancecache" 1
+
+FrameBegin 1
+  Format 400 400 1
+	ShadingInterpolation "smooth"
+	PixelSamples 4 4
+	# render image to framebuffer
+  		Display "pmap_render_pass2.tif" "framebuffer" "rgb"
+  		Display "+pmap_render_pass2.tif" "file" "rgb"
+	Projection "perspective" "fov" 30
+	
+	Translate 0 0 5
+	
+	#Rotate 30 0 1 0 #try another view
+	#Translate 0 0 0.5
+	
+	#Rotate -20 1 0 0 #try another view
+	#Translate 0 -1 2
+	
+	#
+	Attribute "trace"  "bias" [0.001]
+	#
+	
+	WorldBegin
+		Attribute "dice" "rasterorient" 0  # view independent dicing		
+		
+		#Attribute "visibility" "trace" 1  # make objects visible to eye
+		Attribute "visibility" "specular" 1
+              Attribute "visibility" "diffuse" 1
+		Attribute "photon" "globalmap" "cornell.gpm" #if we need to do more samples (view changed)
+		Attribute "photon" "estimator" [500]
+
+		LightSource "cosinelight_rts" "light1" "from" [0 1.0001 0 ] "intensity" 4 
+		#LightSource "pointlight" "light1" "from" [0 1.0001 0 ] "intensity" 4
+
+		# Tiny sphere indicating location of light source ("light bulb")
+		# It is invisible to rays
+		AttributeBegin
+			Surface "constant"
+			Translate 0 1 0
+			Sphere 0.03 -0.03 0.03 360
+		AttributeEnd
+		
+		# Diffuse box (with normals pointing inward)
+		AttributeBegin
+			Surface "indirectsurf2" "Kd" 0.8 
+			#Displacement "dented"
+			Attribute "irradiance" "filemode" "R" "handle" "box.icf" "maxerror" 0.5
+			Color [1 0 0]
+			Polygon "P" [ -1 1 -1  -1 1 1  -1 -1 1  -1 -1 -1] #left wall
+			color [0 0 1]
+			Polygon "P" [ 1 -1 -1  1 -1 1  1 1 1  1 1 -1 ] # right wall
+			Color [1 1 1]
+			Polygon "P" [ -1 1 1  1 1 1  1 -1 1  -1 -1 1 ] # back wall
+			Polygon "P" [ -1 1 -1  1 1 -1  1 1 1  -1 1 1 ] # ceiling
+			Polygon "P" [ -1 -1 1  1 -1 1  1 -1 -1  -1 -1 -1] # floor
+		AttributeEnd
+
+		Attribute "visibility" "transmission" 1  # the spheres cast shadows
+		
+		# Left sphere (chrome)
+		AttributeBegin
+			#
+			Attribute "trace"  "bias" [0.01]
+			#
+
+			Surface "mirror" "samples" 4 "blur" 0.001 
+			#Displacement "dented"
+			Attribute "irradiance" "filemode" "R" "handle" "chromesphere.icf"
+			Translate -0.3 -0.7 0.3
+			Sphere 0.3 -0.3 0.3 360
+		AttributeEnd
+	
+		# Right sphere (diffuse)
+		AttributeBegin
+			Surface "indirectsurf"
+			#Surface "indirectsurf2" "Kd" 0.8 
+			#Displacement "dented"
+			Attribute "irradiance" "filemode" "R" "handle" "diffusesphere.icf"
+			Translate 0.3 -0.7 -0.3
+			Sphere 0.3 -0.3 0.3 360
+		AttributeEnd
+	WorldEnd
+FrameEnd
+
