@@ -1,3 +1,5 @@
+Pixieの古い(2010年くらい)レガシーのサンプルです。使用は自己責任でお願いします。
+
 # Using Pixie Renderer 2.2.6
 
 https://sourceforge.net/projects/pixie/
@@ -20,3 +22,5 @@ rndr pmap_render_pass2.rib
 ```
 
 Thank you for your support.
+
+
