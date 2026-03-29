@@ -1,0 +1,133 @@
+##RenderMan RIB-Structure 1.0
+version 3.03
+# illum3 -- Pass 0: フォトン射出
+
+Hider "photon" "emit" 800000
+
+FrameBegin 1
+
+Format 960 720 -1
+Projection "perspective" "fov" 42
+Translate 0.25 -1.25 3.25
+Rotate 207 0 1 0
+
+WorldBegin
+    Attribute "visibility" "specular"     1
+    Attribute "visibility" "diffuse"      1
+    Attribute "visibility" "transmission" 1
+
+    Attribute "photon" "globalmap" "illum3.gpm"
+    Attribute "photon" "estimator" [200]
+    Attribute "trace" "maxspeculardepth" [5]
+    Attribute "trace" "maxdiffusedepth"  [5]
+    Attribute "trace"      "bias"         0.1
+
+    LightSource "cosinelight_rts" "light1"
+        "from"      [1.25 2.4 -1.25]
+        "intensity" [5]
+
+    LightSource "cosinelight_rts" "light2"
+        "from"      [-0.5 2.4 -1.25]
+        "intensity" [3]
+
+    AttributeBegin
+        Attribute "photon" "shadingmodel" "matte"
+        Surface "matte" "Kd" [0.75]
+        Color [0.9 0.6 0.3]
+        Translate 1.77 0.075 -1.126
+        Scale 0.05 0.6 0.05
+        Rotate -90 1 0 0
+        Cylinder 1 0 1 360
+    AttributeEnd
+
+    AttributeBegin
+        Attribute "photon" "shadingmodel" "matte"
+        Surface "matte" "Kd" [0.75]
+        Translate 1.77 1.126 -1.126
+        Scale 0.45 0.45 0.45
+        Sphere 1 -1 1 360
+    AttributeEnd
+
+    AttributeBegin
+        Attribute "photon" "shadingmodel" "matte"
+        Surface "matte" "Kd" [0.75]
+        Color [0.9 0.9 0.9]
+        Translate 0.576 0.45 -1.78
+        Scale 0.45 0.45 0.45
+        Sphere 1 -1 1 360
+    AttributeEnd
+
+    AttributeBegin
+        Attribute "photon" "shadingmodel" "matte"
+        Surface "matte" "Kd" [0.75]
+        Color [0.92 0.92 0.92]
+        Translate -0.6 0.15 -0.6
+        Scale 0.15 0.15 0.15
+        Sphere 1 -1 1 360
+    AttributeEnd
+
+    AttributeBegin
+        Attribute "photon" "shadingmodel" "matte"
+        Surface "matte" "Kd" [0.75]
+        Color [0.92 0.92 0.92]
+        Translate 0.5 1.5 -3.75
+        Rotate 90.000031 0 0 1
+        Scale 0.15 1.5 0.15
+        Rotate -90 1 0 0
+        Cylinder 1 0 1 360
+    AttributeEnd
+
+    AttributeBegin
+        Attribute "photon" "shadingmodel" "matte"
+        Surface "matte" "Kd" [0.75]
+        Color [0.92 0.92 0.92]
+        Polygon "P" [0.5 0.0 -4.0  0.5 2.5 -4.0  0.5 2.5 -2.5  0.5 0.0 -2.5]
+    AttributeEnd
+
+    AttributeBegin
+        Attribute "photon" "shadingmodel" "matte"
+        Surface "matte" "Kd" [0.75]
+        Color [0.95 0.1 0.1]
+        Polygon "P" [2.5 0.0 -2.5  2.5 2.5 -2.5  2.5 2.5 0.0  2.5 0.0 0.0]
+    AttributeEnd
+
+    AttributeBegin
+        Attribute "photon" "shadingmodel" "matte"
+        Surface "matte" "Kd" [0.75]
+        Color [0.92 0.92 0.92]
+        Polygon "P" [-1.0 2.5 -4.0  0.5 2.5 -4.0  0.5 0.0 -4.0  -1.0 0.0 -4.0]
+    AttributeEnd
+
+    AttributeBegin
+        Attribute "photon" "shadingmodel" "matte"
+        Surface "matte" "Kd" [0.75]
+        Color [0.92 0.92 0.92]
+        Polygon "P" [0.5 2.5 -2.5  2.5 2.5 -2.5  2.5 0.0 -2.5  0.5 0.0 -2.5]
+    AttributeEnd
+
+    AttributeBegin
+        Attribute "photon" "shadingmodel" "matte"
+        Surface "matte" "Kd" [0.75]
+        Color [0.92 0.92 0.92]
+        Polygon "P" [0.5 2.5 -2.5  0.5 2.5 -4.0  -1.0 2.5 -4.0  -1.0 2.5 -2.5]
+    AttributeEnd
+
+    AttributeBegin
+        Attribute "photon" "shadingmodel" "matte"
+        Surface "matte" "Kd" [0.75]
+        Color [0.92 0.92 0.92]
+        Polygon "P" [2.5 2.5 0.0  2.5 2.5 -2.5  -1.0 2.5 -2.5  -1.0 2.5 0.0]
+    AttributeEnd
+
+    AttributeBegin
+        Attribute "photon" "shadingmodel" "matte"
+        Surface "matte" "Kd" [0.75]
+        Color [0.8 0.7 0.6]
+        Polygon "P" [2.5 0.0 -2.5  2.5 0.0 0.0  -1.0 0.0 0.0]
+        Polygon "P" [0.5 0.0 -2.5  2.5 0.0 -2.5  -1.0 0.0 0.0]
+        Polygon "P" [0.5 0.0 -4.0  0.5 0.0 -2.5  -1.0 0.0 0.0]
+        Polygon "P" [-1.0 0.0 -4.0  0.5 0.0 -4.0  -1.0 0.0 0.0]
+    AttributeEnd
+
+WorldEnd
+FrameEnd

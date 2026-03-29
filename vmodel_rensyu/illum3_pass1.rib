@@ -1,0 +1,138 @@
+##RenderMan RIB-Structure 1.0
+version 3.03
+# illum3 -- Pass 1: イラディアンスキャッシュ書き込み
+# Torus / Cylinder も matte に変更して切り分け
+
+Option "limits" "int numthreads"   [2]
+Option "limits" "int gridsize"     [512]
+Option "limits" "int bucketsize" [32 32]
+Option "trace"  "int maxdepth"     [3]
+Option "statistics" "int endofframe" [2]
+
+Hider "zbuffer"
+
+Format 960 720 -1
+ShadingInterpolation "smooth"
+PixelSamples 4 4
+Display "illum3_pass1.tif" "file" "rgb"
+Projection "perspective" "fov" 42
+Translate 0.25 -1.25 3.25
+Rotate 207 0 1 0
+
+WorldBegin
+ReverseOrientation
+Attribute "visibility" "specular"     1
+Attribute "visibility" "diffuse"      1
+Attribute "trace"      "bias"         0.1
+
+    LightSource "cosinelight_rts" "light1"
+        "from"      [1.25 2.4 -1.25]
+        "intensity" [5]
+
+    LightSource "cosinelight_rts" "light2"
+        "from"      [-0.5 2.4 -1.25]
+        "intensity" [3]
+
+
+    Attribute "visibility" "transmission" 1
+    Attribute "photon" "globalmap" "illum3.gpm"
+    Attribute "photon" "estimator" [500]
+    Attribute "irradiance" "maxerror" 0.5
+
+    # ── Stand: Cylinder → matte ──
+    AttributeBegin
+        Surface "matte"
+        Color [0.9 0.6 0.3]
+        Translate 1.77 0.075 -1.126
+        Scale 0.05 0.6 0.05
+        Rotate -90 1 0 0
+        Cylinder 1 0 1 360
+    AttributeEnd
+
+    # ── pipe: Cylinder → matte ──
+    AttributeBegin
+        Surface "matte"
+        Color [0.92 0.92 0.92]
+        Translate 0.5 1.5 -3.75
+        Rotate 90.000031 0 0 1
+        Scale 0.15 1.5 0.15
+        Rotate -90 1 0 0
+        Cylinder 1 0 1 360
+    AttributeEnd
+
+AttributeBegin
+	# GlassBall
+	Surface "indirectsurf1sided" "samples" 1024
+	Attribute "irradiance" "filemode" "w" "handle" "glasssphere.icf"
+	Attribute "irradiance" "maxerror" 0.5
+        Color [1 1 1]
+        TransformBegin
+            Translate 1.77 1.126 -1.126
+            Scale 0.45 0.45 0.45
+            Sphere 1 -1 1 360
+        TransformEnd
+AttributeEnd
+
+AttributeBegin
+	# MirrorBall
+	Surface "indirectsurf1sided" "samples" 1024
+	Attribute "irradiance" "filemode" "w" "handle" "mirrorsphere.icf"
+	Attribute "irradiance" "maxerror" 0.5
+        Color [0.9 0.9 0.9]
+        TransformBegin
+            Translate 0.576 0.45 -1.78
+            Scale 0.45 0.45 0.45
+            Sphere 1 -1 1 360
+        TransformEnd
+AttributeEnd
+
+AttributeBegin
+	# WhiteBall
+	Surface "indirectsurf1sided" "samples" 1024
+	Attribute "irradiance" "filemode" "w" "handle" "whitesphere.icf"
+	Attribute "irradiance" "maxerror" 0.5
+        Color [0.92 0.92 0.92]
+        TransformBegin
+            Translate -0.6 0.15 -0.6
+            Scale 0.15 0.15 0.15
+            Sphere 1 -1 1 360
+        TransformEnd
+AttributeEnd
+
+
+# ── Sphere系 / ポリゴン系を1つの icf に統合 ──
+    AttributeBegin
+        Surface "indirectsurf1sided" "samples" 2048
+        Attribute "irradiance" "filemode" "w" "handle" "illum3.icf"
+        Attribute "irradiance" "maxerror" 0.3
+        # middle_wall
+        Color [0.92 0.92 0.92]
+        Polygon "P" [0.5 0.0 -4.0  0.5 2.5 -4.0  0.5 2.5 -2.5  0.5 0.0 -2.5]
+
+        # left_wall
+        Color [0.95 0.1 0.1]
+        Polygon "P" [2.5 0.0 -2.5  2.5 2.5 -2.5  2.5 2.5 0.0  2.5 0.0 0.0]
+
+        # back_back_wall
+        Color [0.92 0.92 0.92]
+        Polygon "P" [-1.0 2.5 -4.0  0.5 2.5 -4.0  0.5 0.0 -4.0  -1.0 0.0 -4.0]
+
+        # front_back_wall
+        Polygon "P" [0.5 2.5 -2.5  2.5 2.5 -2.5  2.5 0.0 -2.5  0.5 0.0 -2.5]
+
+        # Ceiling2
+        Polygon "P" [0.5 2.5 -2.5  0.5 2.5 -4.0  -1.0 2.5 -4.0  -1.0 2.5 -2.5]
+
+        # Ceiling1
+        Polygon "P" [2.5 2.5 0.0  2.5 2.5 -2.5  -1.0 2.5 -2.5  -1.0 2.5 0.0]
+
+        # Floor
+        Color [0.8 0.7 0.6]
+        Polygon "P" [2.5 0.0 -2.5  2.5 0.0 0.0  -1.0 0.0 0.0]
+        Polygon "P" [0.5 0.0 -2.5  2.5 0.0 -2.5  -1.0 0.0 0.0]
+        Polygon "P" [0.5 0.0 -4.0  0.5 0.0 -2.5  -1.0 0.0 0.0]
+        Polygon "P" [-1.0 0.0 -4.0  0.5 0.0 -4.0  -1.0 0.0 0.0]
+
+    AttributeEnd
+
+WorldEnd

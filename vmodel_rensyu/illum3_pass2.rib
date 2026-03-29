@@ -1,0 +1,168 @@
+##RenderMan RIB-Structure 1.0
+version 3.03
+# illum3 -- Pass 2: 最終レンダリング
+
+FrameBegin 1
+
+Format 960 720 -1
+PixelSamples 4 4
+PixelFilter "catmull-rom" 4 4
+ShadingRate 0.25
+ShadingInterpolation "smooth"
+Exposure 1 2.2
+Display "illum3_pass2.tif" "file" "rgb"
+Projection "perspective" "fov" 42
+Translate 0.25 -1.25 3.25
+Rotate 207 0 1 0
+
+WorldBegin
+
+    Attribute "visibility" "specular"     1
+    Attribute "visibility" "diffuse"      1
+    Attribute "visibility" "transmission" 1
+    Attribute "trace"      "bias"         0.005
+
+    Attribute "photon" "globalmap" "illum3.gpm"
+    Attribute "photon" "estimator" [500]
+
+    LightSource "cosinelight_rts" "light1"
+        "from"      [1.25 2.4 -1.25]
+        "intensity" [5]
+
+    LightSource "cosinelight_rts" "light2"
+        "from"      [-0.5 2.4 -1.25]
+        "intensity" [3]
+
+    # ── Foot ──
+    AttributeBegin
+        Surface "indirectsurf2" "Kd" 0.8 "samples" 128
+        Attribute "irradiance" "filemode" "R" "handle" "illum3.icf" "maxerror" 0.3
+        Color [0.9 0.6 0.3]
+        Translate 1.77 0.0 -1.126
+        Rotate -90 1 0 0
+        Torus 0.05 0.075 0 90 360
+    AttributeEnd
+
+    # ── Stand ──
+    AttributeBegin
+        Surface "indirectsurf2" "Kd" 0.8 "samples" 128
+        Attribute "irradiance" "filemode" "R" "handle" "illum3.icf" "maxerror" 0.3
+        Color [0.9 0.6 0.3]
+        Translate 1.77 0.075 -1.126
+        Scale 0.05 0.6 0.05
+        Rotate -90 1 0 0
+        Cylinder 1 0 1 360
+    AttributeEnd
+
+    # ── GlassBall ──
+    AttributeBegin
+        Surface "glass" "float roughness" 0.05 "float eta" 2.22
+        Attribute "irradiance" "filemode" "R" "handle" "glasssphere.icf" "maxerror" 0.3
+        Translate 1.77 1.126 -1.126
+        Scale 0.45 0.45 0.45
+        Sphere 1 -1 1 360
+    AttributeEnd
+
+    # ── MirrorBall ──
+    AttributeBegin
+        Surface "mirror" "samples" 4 "blur" 0.001 
+        Attribute "irradiance" "filemode" "R" "handle" "mirrorsphere.icf" "maxerror" 0.3
+        Color [0.9 0.9 0.9]
+        Translate 0.576 0.45 -1.78
+        Scale 0.45 0.45 0.45
+        Sphere 1 -1 1 360
+    AttributeEnd
+
+    # ── WhiteBall ──
+    AttributeBegin
+        Surface "indirectsurf2" "Kd" 0.8 "samples" 128
+        Attribute "irradiance" "filemode" "R" "handle" "whitesphere.icf" "maxerror" 0.3
+        Color [0.1 0.95 0.1]
+        Translate -0.6 0.15 -0.6
+        Scale 0.15 0.15 0.15
+        Sphere 1 -1 1 360
+    AttributeEnd
+
+    # ── horizontal_pipe ──
+    AttributeBegin
+        #Surface "indirectsurf2" "Kd" 0.8 "samples" 128
+        Surface "mirror" "samples" 8 "blur" 0.1
+        Attribute "irradiance" "filemode" "R" "handle" "illum3.icf" "maxerror" 0.3
+        Color [0.92 0.92 0.92]
+        Translate 0.5 1.5 -3.75
+        Rotate 90.000031 0 0 1
+        Scale 0.15 1.5 0.15
+        Rotate -90 1 0 0
+        Cylinder 1 0 1 360
+    AttributeEnd
+
+    # ── middle_wall ──
+    AttributeBegin
+        Surface "indirectsurf2" "Kd" 0.8 "samples" 128
+        Attribute "irradiance" "filemode" "R" "handle" "illum3.icf" "maxerror" 0.3
+        Color [0.92 0.92 0.92]
+        Polygon "P" [0.5 0.0 -4.0  0.5 2.5 -4.0  0.5 2.5 -2.5  0.5 0.0 -2.5]
+    AttributeEnd
+
+    # ── left_wall ──
+    AttributeBegin
+        Surface "indirectsurf2" "Kd" 0.8 "samples" 128
+        Attribute "irradiance" "filemode" "R" "handle" "illum3.icf" "maxerror" 0.3
+        Color [0.95 0.1 0.1]
+        Polygon "P" [2.5 0.0 -2.5  2.5 2.5 -2.5  2.5 2.5 0.0  2.5 0.0 0.0]
+    AttributeEnd
+
+    # ── back_back_wall ──
+    AttributeBegin
+        Surface "indirectsurf2" "Kd" 0.8 "samples" 128
+        Attribute "irradiance" "filemode" "R" "handle" "illum3.icf" "maxerror" 0.3
+        Color [0.92 0.92 0.92]
+        Polygon "P" [-1.0 2.5 -4.0  0.5 2.5 -4.0  0.5 0.0 -4.0  -1.0 0.0 -4.0]
+    AttributeEnd
+
+    # ── front_back_wall ──
+    AttributeBegin
+        Surface "indirectsurf2" "Kd" 0.8 "samples" 128
+        Attribute "irradiance" "filemode" "R" "handle" "illum3.icf" "maxerror" 0.3
+        Color [0.92 0.92 0.92]
+        Polygon "P" [0.5 2.5 -2.5  2.5 2.5 -2.5  2.5 0.0 -2.5  0.5 0.0 -2.5]
+    AttributeEnd
+
+    # ── Ceiling2 ──
+    AttributeBegin
+        Surface "indirectsurf2" "Kd" 0.8 "samples" 128
+        Attribute "irradiance" "filemode" "R" "handle" "illum3.icf" "maxerror" 0.3
+        Color [0.92 0.92 0.92]
+        Polygon "P" [0.5 2.5 -2.5  0.5 2.5 -4.0  -1.0 2.5 -4.0  -1.0 2.5 -2.5]
+    AttributeEnd
+
+    # ── Ceiling1 ──
+    AttributeBegin
+        Surface "indirectsurf2" "Kd" 0.8 "samples" 128
+        Attribute "irradiance" "filemode" "R" "handle" "illum3.icf" "maxerror" 0.3
+        Color [0.92 0.92 0.92]
+        Polygon "P" [2.5 2.5 0.0  2.5 2.5 -2.5  -1.0 2.5 -2.5  -1.0 2.5 0.0]
+    AttributeEnd
+
+    # ── Floor ──
+    AttributeBegin
+        Surface "indirectsurf2" "Kd" 0.7 "samples" 128
+        Attribute "irradiance" "filemode" "R" "handle" "illum3.icf" "maxerror" 0.3
+        Color [0.8 0.7 0.6]
+        Polygon "P" [2.5 0.0 -2.5  2.5 0.0 0.0  -1.0 0.0 0.0]
+        Polygon "P" [0.5 0.0 -2.5  2.5 0.0 -2.5  -1.0 0.0 0.0]
+        Polygon "P" [0.5 0.0 -4.0  0.5 0.0 -2.5  -1.0 0.0 0.0]
+        Polygon "P" [-1.0 0.0 -4.0  0.5 0.0 -4.0  -1.0 0.0 0.0]
+    AttributeEnd
+
+    # ── ライトジオメトリ ──
+    AttributeBegin
+        Surface "constant"
+        Color [1.0 1.0 0.9]
+        Polygon "P" [1.55 2.4 -0.95  1.55 2.4 -1.55  0.95 2.4 -1.55  0.95 2.4 -0.95]
+        Polygon "P" [0.95 2.5 -0.95  1.55 2.5 -0.95  1.55 2.4 -0.95  0.95 2.4 -0.95]
+        Polygon "P" [0.95 2.4 -1.55  0.95 2.5 -1.55  0.95 2.5 -0.95  0.95 2.4 -0.95]
+    AttributeEnd
+
+WorldEnd
+FrameEnd
