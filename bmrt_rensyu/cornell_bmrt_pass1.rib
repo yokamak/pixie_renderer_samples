@@ -1,0 +1,88 @@
+##RenderMan RIB-Structure 1.0
+version 3.03
+# Cornell Box (BMRT geometry) -- Pixie Photon Map
+# Pass 1: イラディアンスキャッシュ生成
+# Pixie 32bit Windows版 動作確認済み記法に統一
+
+Hider "zbuffer"
+
+FrameBegin 1
+
+Format 400 400 1
+ShadingInterpolation "smooth"
+PixelSamples 4 4
+Display "cornell_bmrt_pass1.tif" "file" "rgb"
+Projection "perspective" "fov" 37
+FrameAspectRatio 1
+Scale -1 1 1
+Orientation "rh"
+Translate -278 -273 800
+
+WorldBegin
+
+    Attribute "visibility" "specular"     1
+    Attribute "visibility" "diffuse"      1
+    Attribute "trace"      "bias"         0.5
+
+    LightSource "cosinelight_rts" "light1"
+        "from"      [278 548.6 279.5]
+        "intensity" [800000]
+
+    Attribute "visibility" "transmission" 1
+
+    Attribute "photon" "globalmap" "cornell_bmrt.gpm"
+    Attribute "photon" "estimator" [500]
+    Attribute "irradiance" "maxerror" 0.5
+
+    ########################################################################
+    # Walls
+    ########################################################################
+    AttributeBegin
+        Surface "indirectsurf1sided" "samples" 1024
+        Attribute "irradiance" "filemode" "w" "handle" "cornell_bmrt_walls.icf"
+        Attribute "irradiance" "maxerror" 0.5
+
+        Color [1 1 1]
+        Polygon "P" [550 0 0   0 0 0   0 0 560   550 0 560]
+        Polygon "P" [560 550 0  560 550 560  0 550 560  0 550 0]
+        Polygon "P" [550 0 560  0 0 560  0 550 560  560 550 560]
+
+        Color [0.15 0.5 0.15]
+        Polygon "P" [0 0 560  0 0 0  0 550 0  0 550 560]
+
+        Color [0.64 0.15 0.1]
+        Polygon "P" [550 0 0  550 0 560  560 550 560  560 550 0]
+    AttributeEnd
+
+    ########################################################################
+    # Short Box
+    ########################################################################
+    AttributeBegin
+        Surface "indirectsurf1sided" "samples" 1024
+        Attribute "irradiance" "filemode" "w" "handle" "cornell_bmrt_shortbox.icf"
+        Attribute "irradiance" "maxerror" 0.5
+        Color [1 1 1]
+        Polygon "P" [130 165 65   82 165 225   240 165 272   290 165 114]
+        Polygon "P" [290 0 114   290 165 114   240 165 272   240 0 272]
+        Polygon "P" [130 0 65    130 165 65    290 165 114   290 0 114]
+        Polygon "P" [82 0 225    82 165 225    130 165 65    130 0 65]
+        Polygon "P" [240 0 272   240 165 272   82 165 225    82 0 225]
+    AttributeEnd
+
+    ########################################################################
+    # Tall Box
+    ########################################################################
+    AttributeBegin
+        Surface "indirectsurf1sided" "samples" 1024
+        Attribute "irradiance" "filemode" "w" "handle" "cornell_bmrt_tallbox.icf"
+        Attribute "irradiance" "maxerror" 0.5
+        Color [1 1 1]
+        Polygon "P" [423 330 247   265 330 296   314 330 456   472 330 406]
+        Polygon "P" [423 0 247     423 330 247   472 330 406   472 0 406]
+        Polygon "P" [472 0 406     472 330 406   314 330 456   314 0 456]
+        Polygon "P" [314 0 456     314 330 456   265 330 296   265 0 296]
+        Polygon "P" [265 0 296     265 330 296   423 330 247   423 0 247]
+    AttributeEnd
+
+WorldEnd
+FrameEnd

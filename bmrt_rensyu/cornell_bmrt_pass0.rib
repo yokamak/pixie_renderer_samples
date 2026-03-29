@@ -1,0 +1,86 @@
+##RenderMan RIB-Structure 1.0
+version 3.03
+# Cornell Box (BMRT geometry) -- Pixie Photon Map
+# Pass 0: フォトン射出 → cornell_bmrt.gpm 生成
+#
+# 座標系: 550単位スケール（元のBMRT/コーネル大学オリジナル座標）
+# カメラ: Translate -278 -273 800 / fov 37
+#
+# 実行: pixie cornell_bmrt_pass0.rib
+
+FrameBegin 1
+
+# フォトンヒダー: emit = 射出フォトン数
+# 550単位スケールなので多めに設定
+Hider "photon" "emit" [500000]
+
+Scale -1 1 1
+Orientation "rh"
+Translate -278 -273 800
+
+WorldBegin
+
+    # フォトンマップ出力先
+    Attribute "photon" "globalmap" "cornell_bmrt.gpm"
+    Attribute "photon" "estimator" [200]
+
+    Attribute "trace" "maxspeculardepth" [5]
+    Attribute "trace" "maxdiffusedepth"  [5]
+    Attribute "trace" "bias"             [0.5]
+
+    ########################################################################
+    # Light Source（天井中央エリアライト → cosinelight_rts でフォトン射出）
+    # 位置: 天井 Y=548.8, 中心 X=278, Z=279.5
+    # cosinelight_rts は Pixie 同梱の指向性ライト。
+    # "from" はワールド座標でのライト位置。
+    ########################################################################
+    LightSource "cosinelight_rts" 1
+        "from"      [278 548.7 279.5]
+        "intensity" [800000]
+
+    ########################################################################
+    # Walls（フォトンシェーディングモデル: matte）
+    ########################################################################
+    AttributeBegin
+        Attribute "photon" "shadingmodel" "matte"
+
+        Color [1 1 1]
+        Polygon "P" [550 0 0   0 0 0   0 0 560   550 0 560]       # floor
+        Polygon "P" [560 550 0  560 550 560  0 550 560  0 550 0]   # ceiling
+        Polygon "P" [550 0 560  0 0 560  0 550 560  560 550 560]   # back wall
+
+        Color [0.15 0.5 0.15]
+        Polygon "P" [0 0 560  0 0 0  0 550 0  0 550 560]           # right wall (green)
+
+        Color [0.64 0.15 0.1]
+        Polygon "P" [550 0 0  550 0 560  560 550 560  560 550 0]   # left wall (red)
+    AttributeEnd
+
+    ########################################################################
+    # Short Box
+    ########################################################################
+    AttributeBegin
+        Attribute "photon" "shadingmodel" "matte"
+        Color [1 1 1]
+        Polygon "P" [130 165 65   82 165 225   240 165 272   290 165 114]
+        Polygon "P" [290 0 114   290 165 114   240 165 272   240 0 272]
+        Polygon "P" [130 0 65    130 165 65    290 165 114   290 0 114]
+        Polygon "P" [82 0 225    82 165 225    130 165 65    130 0 65]
+        Polygon "P" [240 0 272   240 165 272   82 165 225    82 0 225]
+    AttributeEnd
+
+    ########################################################################
+    # Tall Box
+    ########################################################################
+    AttributeBegin
+        Attribute "photon" "shadingmodel" "matte"
+        Color [1 1 1]
+        Polygon "P" [423 330 247   265 330 296   314 330 456   472 330 406]
+        Polygon "P" [423 0 247     423 330 247   472 330 406   472 0 406]
+        Polygon "P" [472 0 406     472 330 406   314 330 456   314 0 456]
+        Polygon "P" [314 0 456     314 330 456   265 330 296   265 0 296]
+        Polygon "P" [265 0 296     265 330 296   423 330 247   423 0 247]
+    AttributeEnd
+
+WorldEnd
+FrameEnd
